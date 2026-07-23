@@ -1,0 +1,12 @@
+[Unit]
+Description=CMP90HX boot-stage compute unlock handoff
+After=systemd-modules-load.service systemd-udev-settle.service
+Before=nvidia-persistenced.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/lib/cmp90hx-persistent/bootstrap.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

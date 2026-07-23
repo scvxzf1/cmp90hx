@@ -24,8 +24,7 @@ if [[ -e "${source_dir}" ]]; then
 fi
 
 mkdir -p "${work_root}" "${artifact_dir}"
-git clone --filter=blob:none --branch "${driver_version}" --depth 1 \
-    https://github.com/NVIDIA/open-gpu-kernel-modules.git "${source_dir}"
+cp -a  "${work_root}/o" "${source_dir}"
 [[ "$(git -C "${source_dir}" rev-parse HEAD)" == "${source_commit}" ]]
 git -C "${source_dir}" apply --check "${patch_file}"
 git -C "${source_dir}" apply "${patch_file}"
