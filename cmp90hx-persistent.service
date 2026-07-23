@@ -1,7 +1,11 @@
 [Unit]
 Description=CMP90HX boot-stage compute unlock handoff
-After=systemd-modules-load.service systemd-udev-settle.service
-Before=nvidia-persistenced.service
+DefaultDependencies=no
+# The bootstrap module is loaded from initramfs.  Hold normal driver consumers
+# until after the FLR handoff, otherwise their probes flood the journal while
+# GSP is deliberately incomplete.
+After=local-fs.target systemd-modules-load.service
+Before=basic.target nvidia-persistenced.service
 
 [Service]
 Type=oneshot
@@ -9,4 +13,4 @@ ExecStart=/usr/local/lib/cmp90hx-persistent/bootstrap.sh
 RemainAfterExit=yes
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=sysinit.target

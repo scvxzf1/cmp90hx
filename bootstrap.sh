@@ -12,14 +12,14 @@ log() { logger -t cmp90hx-persistent -- "$*"; echo "cmp90hx-persistent: $*"; }
     log 'missing installation state'; exit 1;
 }
 
+# Start the bootstrap module explicitly.  Its V67 sequence completes during
+# early GSP initialization; 75 seconds covers the measured 61-second worst
+# case with margin.  Do not call nvidia-smi before the FLR: its probe against
+# the intentionally incomplete bootstrap device floods the kernel journal.
 modprobe ecc || true
-modprobe nvidia || true
-nvidia-smi -L >/dev/null 2>&1 || true
-# The V67 sequence runs during the first GSP initialization immediately after
-# module load.  Kernel-ring records can be rate-limited, so do not use them as
-# a control signal; the post-handoff RM full-rate query is the verification.
-sleep 10
-log 'boot-stage delay complete; handing off through FLR'
+modprobe nvidia
+sleep 75
+log 'bootstrap delay complete; handing off through FLR'
 
 systemctl stop nvidia-cdi-refresh.path nvidia-cdi-refresh.service \
     nvidia-persistenced.service >/dev/null 2>&1 || true
