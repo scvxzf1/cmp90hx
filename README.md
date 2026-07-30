@@ -43,7 +43,9 @@
 /lib/modules/$(uname -r)/updates/cmp90hx-persistent/backup/nvidia.ko.stock
 ```
 
-引导候选模块单独保存为 `nvidia.ko.bootstrap`。多卡按串行方式处理，已验证的六卡机器完整开机流程约需 11 分钟，耗时会随卡数大致线性增加。启动服务不会调用 `check.sh`，其诊断结果也不会影响 HiveOS / os-core 服务的恢复。
+引导候选模块单独保存为 `nvidia.ko.bootstrap`。多卡按串行方式处理：单卡约需 2 分钟，每增加一张卡通常再增加约 2 分钟；已验证的六卡机器完整开机流程约需 11 分钟。请为多卡机器预留足够的启动时间。
+
+> **重要：** 从 `cmp90hx-persistent.service` 开始运行到批处理完成之前，不要启动任何 GPU 工作负载，也不要手动执行 `nvidia-smi`、矿工、CUDA 程序、GPU 容器或监控程序。请等待 `/run/cmp90hx-persistent-batch.status` 显示所有卡已完成、原始 NVIDIA 驱动恢复上线后，再使用 GPU。启动服务不会调用 `check.sh`，其诊断结果也不会影响 HiveOS / os-core 服务的恢复。
 
 ## 安装条件
 
